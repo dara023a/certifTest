@@ -26,7 +26,7 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
 
   if (!isClient || !authed) {
     return (
-      <div className="grid min-h-screen place-items-center text-sm text-muted-foreground">
+      <div className="grid min-h-dvh place-items-center text-sm text-muted-foreground">
         <span role="status">Loading…</span>
       </div>
     );

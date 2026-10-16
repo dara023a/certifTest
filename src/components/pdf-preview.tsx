@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { Download, FileWarning } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -16,9 +17,64 @@ interface PdfPreviewProps {
   className?: string;
 }
 
+const emptySubscribe = () => () => {};
+
+/**
+ * Detects whether this browser can render an inline PDF.
+ * iOS Safari (and Safari's inline viewer) cannot embed blob PDFs reliably, so
+ * those users get the download fallback instead of a blank frame.
+ */
+function detectPdfEmbed(): boolean {
+  if (typeof navigator === "undefined") {
+    return true;
+  }
+  const ua = navigator.userAgent;
+  const isIOS =
+    /iPad|iPhone|iPod/.test(ua) ||
+    (ua.includes("Macintosh") && typeof document !== "undefined" && "ontouchend" in document);
+  if (isIOS) {
+    return false;
+  }
+  const viewerEnabled = (navigator as Navigator & { pdfViewerEnabled?: boolean })
+    .pdfViewerEnabled;
+  if (typeof viewerEnabled === "boolean") {
+    return viewerEnabled;
+  }
+  return true;
+}
+
+function PdfFallback({
+  unavailableTitle,
+  unavailableDesc,
+  downloadLabel,
+  onDownload,
+  canDownload,
+}: Omit<PdfPreviewProps, "url" | "loading" | "title" | "className"> & {
+  canDownload: boolean;
+}) {
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
+      <FileWarning className="h-8 w-8 text-muted-foreground" aria-hidden="true" />
+      <p className="text-sm font-medium">{unavailableTitle}</p>
+      <p className="max-w-md text-sm text-muted-foreground">{unavailableDesc}</p>
+      <Button
+        size="sm"
+        variant="outline"
+        onClick={onDownload}
+        disabled={!canDownload}
+        className="mt-1"
+      >
+        <Download className="mr-2 h-4 w-4" aria-hidden="true" />
+        {downloadLabel}
+      </Button>
+    </div>
+  );
+}
+
 /**
  * Embeds the generated PDF in a landscape viewer.
- * Shows a skeleton while generating and a fallback when unavailable.
+ * Shows a skeleton while generating, and a download fallback when the browser
+ * cannot display inline PDFs (e.g. iOS Safari) or generation failed.
  */
 export function PdfPreview({
   url,
@@ -30,6 +86,16 @@ export function PdfPreview({
   onDownload,
   className,
 }: PdfPreviewProps) {
+  const canEmbed = useSyncExternalStore(emptySubscribe, detectPdfEmbed, () => true);
+  const showEmbed = Boolean(url) && canEmbed;
+  const fallbackProps = {
+    unavailableTitle,
+    unavailableDesc,
+    downloadLabel,
+    onDownload,
+    canDownload: Boolean(url),
+  };
+
   return (
     <div
       className={cn(
@@ -40,22 +106,17 @@ export function PdfPreview({
       <div className="relative aspect-[297/210] w-full">
         {loading ? (
           <div className="absolute inset-0 animate-pulse bg-muted" aria-hidden="true" />
-        ) : url ? (
-          <iframe
-            src={`${url}#toolbar=1&view=FitH`}
+        ) : showEmbed ? (
+          <object
+            data={`${url}#toolbar=1&view=FitH`}
+            type="application/pdf"
             title={title}
             className="absolute inset-0 h-full w-full"
-          />
+          >
+            <PdfFallback {...fallbackProps} />
+          </object>
         ) : (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center">
-            <FileWarning className="h-8 w-8 text-muted-foreground" aria-hidden="true" />
-            <p className="text-sm font-medium">{unavailableTitle}</p>
-            <p className="max-w-md text-xs text-muted-foreground">{unavailableDesc}</p>
-            <Button size="sm" variant="outline" onClick={onDownload} disabled={!url}>
-              <Download className="mr-2 h-4 w-4" aria-hidden="true" />
-              {downloadLabel}
-            </Button>
-          </div>
+          <PdfFallback {...fallbackProps} />
         )}
       </div>
     </div>

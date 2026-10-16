@@ -1,5 +1,3 @@
-import { cn } from "@/lib/utils";
-
 export interface BarChartDatum {
   label: string;
   value: number;
@@ -29,9 +27,7 @@ export function BarChart({ data, emptyLabel, ariaLabel }: BarChartProps) {
                 />
               </div>
               <span
-                className={cn(
-                  "text-[10px] whitespace-nowrap text-muted-foreground tabular-nums"
-                )}
+                className="text-sm whitespace-nowrap text-muted-foreground tabular-nums"
               >
                 {datum.label}
               </span>

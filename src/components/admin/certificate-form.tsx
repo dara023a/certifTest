@@ -22,7 +22,7 @@ import { translations } from "@/lib/i18n";
 import type { Certificate, CertificateType } from "@/lib/types";
 
 const selectClass =
-  "h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30";
+  "h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm dark:bg-input/30 [@media(pointer:coarse)]:h-11";
 
 type ErrorCode = "required" | "idFormat" | "idTaken" | null;
 
@@ -233,7 +233,7 @@ export function CertificateForm({ mode, certificate, certificates }: Certificate
     const text = errorText(errors[key]);
     if (!text) return null;
     return (
-      <p id={`${key}-error`} className="text-xs text-destructive">
+      <p id={`${key}-error`} className="text-sm text-destructive">
         {text}
       </p>
     );
@@ -251,7 +251,7 @@ export function CertificateForm({ mode, certificate, certificates }: Certificate
         description={t.certificates.subtitle}
       />
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <section className="space-y-4 rounded-xl bg-card p-4 ring-1 ring-foreground/10 sm:p-6">
           <div className="space-y-1.5">
             <label htmlFor="type" className="text-sm font-medium">
@@ -359,7 +359,7 @@ export function CertificateForm({ mode, certificate, certificates }: Certificate
               ))}
             </select>
             {showError("templateId")}
-            <p className="text-xs text-muted-foreground">{t.templates.todo}</p>
+            <p className="text-sm text-muted-foreground">{t.templates.todo}</p>
           </div>
 
           {form.type === "webinar" ? (

@@ -6,7 +6,10 @@ import { ORGANIZATION } from "@/lib/types";
 export function Logo() {
   const name = ORGANIZATION.name;
   return (
-    <Link href="/" className="flex items-center gap-2">
+    <Link
+      href="/"
+      className="flex items-center gap-2 [@media(pointer:coarse)]:min-h-11"
+    >
       <Image
         src="/logo.svg"
         alt={name}

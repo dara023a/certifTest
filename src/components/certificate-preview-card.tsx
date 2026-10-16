@@ -32,7 +32,7 @@ interface FieldProps {
 function Field({ label, value, mono }: FieldProps) {
   return (
     <div className="space-y-1">
-      <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <dt className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
         {label}
       </dt>
       <dd className={cn("text-sm font-medium text-foreground", mono && "font-mono")}>{value}</dd>
@@ -119,13 +119,13 @@ export function CertificatePreviewCard({ certificate }: CertificatePreviewCardPr
         downloadLabel={t.downloadPdf}
         onDownload={download}
       />
-      <p className="text-xs text-muted-foreground">{t.pdfNote}</p>
+      <p className="text-sm text-muted-foreground">{t.pdfNote}</p>
 
       {/* Verification status */}
       <section className="rounded-xl border border-border bg-card p-6">
         <Badge
           className={cn(
-            "gap-1.5 px-3 py-1 text-xs font-semibold",
+            "gap-1.5 px-3 py-1 text-sm font-semibold",
             isValid
               ? "border-transparent bg-emerald-700 text-white hover:bg-emerald-700"
               : "border-transparent bg-red-600 text-white hover:bg-red-600"
@@ -156,7 +156,7 @@ export function CertificatePreviewCard({ certificate }: CertificatePreviewCardPr
         {/* Permanent link */}
         <div className="mt-6 rounded-lg border border-border bg-muted/30 p-3">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs text-muted-foreground">{t.permanentLinkLabel}</span>
+            <span className="text-sm text-muted-foreground">{t.permanentLinkLabel}</span>
             <Button
               type="button"
               variant="outline"
@@ -173,7 +173,7 @@ export function CertificatePreviewCard({ certificate }: CertificatePreviewCardPr
               {copiedUrl ? t.copied : t.copy}
             </Button>
           </div>
-          <p className="mt-2 break-all font-mono text-xs text-foreground">
+          <p className="mt-2 break-all font-mono text-sm text-foreground">
             {verificationUrl || "…"}
           </p>
         </div>
@@ -203,7 +203,7 @@ export function CertificatePreviewCard({ certificate }: CertificatePreviewCardPr
             {[t.claimDigital, t.claimPublic, t.claimStatus].map((claim) => (
               <span
                 key={claim}
-                className="rounded-full border border-border bg-muted/40 px-3 py-1 text-xs text-muted-foreground"
+                className="rounded-full border border-border bg-muted/40 px-3 py-1 text-sm text-muted-foreground"
               >
                 {claim}
               </span>

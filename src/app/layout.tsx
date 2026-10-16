@@ -41,7 +41,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body
-        className={`${jakartaSans.variable} ${jetbrainsMono.variable} flex min-h-screen flex-col bg-background font-sans antialiased`}
+        className={`${jakartaSans.variable} ${jetbrainsMono.variable} flex min-h-dvh flex-col bg-background font-sans antialiased`}
       >
         <SettingsProvider>
           <TooltipProvider>{children}</TooltipProvider>

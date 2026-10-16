@@ -125,7 +125,7 @@ export function DashboardView() {
         </div>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <section className="rounded-xl bg-card p-4 ring-1 ring-foreground/10 sm:p-6">
           <div className="flex items-center justify-between gap-2">
             <h2 className="text-base font-semibold tracking-tight">
@@ -145,7 +145,7 @@ export function DashboardView() {
               <li key={certificate.id} className="flex items-center justify-between gap-3 py-3">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">{certificate.recipientName}</p>
-                  <p className="truncate font-mono text-xs text-muted-foreground">
+                  <p className="truncate font-mono text-sm text-muted-foreground">
                     {certificate.certificateId} · {certificateHeadline(certificate)}
                   </p>
                 </div>
@@ -174,12 +174,12 @@ export function DashboardView() {
             {latestLogs.map((log) => (
               <li key={log.id} className="flex items-center justify-between gap-3 py-3">
                 <div className="min-w-0">
-                  <p className="truncate font-mono text-xs">{log.certificateId}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="truncate font-mono text-sm">{log.certificateId}</p>
+                  <p className="text-sm text-muted-foreground">
                     {formatDateTime(log.timestamp, language)}
                   </p>
                 </div>
-                <span className="text-xs font-semibold">
+                <span className="text-sm font-semibold">
                   {log.result === "valid"
                     ? t.logs.resultValid
                     : log.result === "revoked"

@@ -152,7 +152,7 @@ export function SharePanel({ caption, verificationUrl, onDownload }: SharePanelP
 
       <div className="mt-6">
         <div className="mb-2 flex items-center justify-between gap-2">
-          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          <span className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
             {t.captionLabel}
           </span>
           <Button
@@ -175,14 +175,14 @@ export function SharePanel({ caption, verificationUrl, onDownload }: SharePanelP
           value={caption}
           rows={7}
           aria-label={t.captionLabel}
-          className="w-full resize-none rounded-lg border border-border bg-muted/30 p-3 font-mono text-xs leading-relaxed text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="w-full resize-none rounded-lg border border-border bg-muted/30 p-3 font-mono text-base leading-relaxed text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-sm"
         />
       </div>
 
       <p
         role="status"
         aria-live="polite"
-        className="mt-3 min-h-5 text-xs text-muted-foreground"
+        className="mt-3 min-h-5 text-sm text-muted-foreground"
       >
         {feedback}
       </p>

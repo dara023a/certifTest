@@ -26,7 +26,7 @@ export function SiteFooter({ year }: { year: number }) {
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div className="max-w-sm space-y-3">
             <Logo />
-            <p className="text-xs text-muted-foreground">{t.footerTagline}</p>
+            <p className="text-sm text-muted-foreground">{t.footerTagline}</p>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             {links.map(({ href, label, Icon }) => (
@@ -35,7 +35,7 @@ export function SiteFooter({ year }: { year: number }) {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-8 w-8 items-center justify-center rounded-md border border-border/60 transition hover:bg-accent hover:text-foreground"
+                className="flex h-8 w-8 items-center justify-center rounded-md border border-border/60 transition hover:bg-accent hover:text-foreground [@media(pointer:coarse)]:h-11 [@media(pointer:coarse)]:w-11"
                 aria-label={label}
               >
                 <Icon className="h-4 w-4" aria-hidden="true" />
@@ -44,11 +44,11 @@ export function SiteFooter({ year }: { year: number }) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 border-t border-border/60 pt-4 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2 border-t border-border/60 pt-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <span>{t.footerRights(year, ORGANIZATION.name)}</span>
           <Link
             href={`mailto:${ORGANIZATION.email}`}
-            className="transition hover:text-foreground"
+            className="transition hover:text-foreground [@media(pointer:coarse)]:inline-flex [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:items-center"
           >
             {ORGANIZATION.email}
           </Link>

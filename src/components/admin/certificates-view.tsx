@@ -33,7 +33,7 @@ type TypeFilter = "all" | "webinar" | "internship";
 type StatusFilter = "all" | "valid" | "revoked";
 
 const selectClass =
-  "h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30";
+  "h-8 rounded-lg border border-input bg-transparent px-2.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm dark:bg-input/30 [@media(pointer:coarse)]:h-11";
 
 function RowActions({ certificate }: { certificate: Certificate }) {
   const { language } = useSettings();
@@ -260,7 +260,7 @@ export function CertificatesView() {
           <table className="w-full min-w-[720px] border-collapse text-sm">
             <caption className="sr-only">{t.certificates.title}</caption>
             <thead>
-              <tr className="border-b border-border bg-muted/40 text-left text-xs text-muted-foreground">
+              <tr className="border-b border-border bg-muted/40 text-left text-sm text-muted-foreground">
                 <th scope="col" className="px-3 py-2 font-medium">{t.certificates.colId}</th>
                 <th scope="col" className="px-3 py-2 font-medium">{t.certificates.colName}</th>
                 <th scope="col" className="px-3 py-2 font-medium">{t.certificates.colType}</th>
@@ -290,7 +290,7 @@ export function CertificatesView() {
                     key={certificate.id}
                     className="border-b border-border/60 last:border-0 hover:bg-muted/30"
                   >
-                    <td className="px-3 py-3 font-mono text-xs">{certificate.certificateId}</td>
+                    <td className="px-3 py-3 font-mono text-sm">{certificate.certificateId}</td>
                     <td className="px-3 py-3 font-medium">{certificate.recipientName}</td>
                     <td className="px-3 py-3">
                       <TypeBadge

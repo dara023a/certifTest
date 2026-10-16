@@ -137,7 +137,7 @@ function SidebarBody({
           <div key={group.label} className="space-y-1">
             <p
               className={cn(
-                "px-2 text-[10px] font-semibold tracking-widest text-white/40",
+                "px-2 text-sm font-medium uppercase tracking-wide text-white/50",
                 collapsed && "sr-only"
               )}
             >
@@ -154,7 +154,7 @@ function SidebarBody({
                   aria-current={active ? "page" : undefined}
                   title={collapsed ? item.label : undefined}
                   className={cn(
-                    "flex items-center justify-between gap-3 rounded-lg px-2.5 py-2 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/60",
+                    "flex items-center justify-between gap-3 rounded-lg px-2.5 py-2 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/60 [@media(pointer:coarse)]:min-h-11",
                     collapsed && "justify-center px-0",
                     active
                       ? "bg-white/10 font-medium text-white ring-1 ring-white/15"
@@ -177,7 +177,7 @@ function SidebarBody({
             <p className="truncate text-sm font-medium text-white">
               {session?.username ?? "admin"}
             </p>
-            <p className="text-xs text-white/50">{t.panelTitle}</p>
+            <p className="text-sm text-white/50">{t.panelTitle}</p>
           </div>
         )}
         <Button
@@ -239,11 +239,11 @@ function Breadcrumbs() {
 
   return (
     <nav aria-label="Breadcrumb">
-      <ol className="flex items-center gap-1.5 rounded-xl bg-card px-3 py-1.5 text-xs text-muted-foreground ring-1 ring-foreground/10">
+      <ol className="flex items-center gap-1.5 rounded-xl bg-card px-3 py-1.5 text-sm text-muted-foreground ring-1 ring-foreground/10">
         <li>
           <Link
             href="/admin"
-            className="flex items-center gap-1 transition-colors hover:text-foreground"
+            className="flex items-center gap-1 transition-colors hover:text-foreground [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:min-w-11 [@media(pointer:coarse)]:justify-center"
             aria-label={t.nav.dashboard}
           >
             <Home className="h-3.5 w-3.5" aria-hidden="true" />
@@ -273,10 +273,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen w-full flex-1">
+    <div className="flex min-h-dvh w-full flex-1">
       <aside
         className={cn(
-          "sticky top-0 hidden h-screen shrink-0 lg:block",
+          "sticky top-0 hidden h-dvh shrink-0 lg:block",
           collapsed ? "w-[72px]" : "w-60"
         )}
       >
@@ -308,7 +308,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <div className="flex items-center justify-center gap-2 border-b border-primary/20 bg-primary/5 px-4 py-1.5 text-xs text-muted-foreground">
+        <div className="flex items-center justify-center gap-2 border-b border-primary/20 bg-primary/5 px-4 py-1.5 text-sm text-muted-foreground">
           <Info className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
           <span className="font-medium text-foreground">{t.simulationMode}</span>
           <span className="hidden truncate sm:inline">· {t.simulationNote}</span>

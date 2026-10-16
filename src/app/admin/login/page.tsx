@@ -47,7 +47,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="grid min-h-screen place-items-center bg-[#f5f7ff] p-4 dark:bg-[#0d1345]">
+    <div className="grid min-h-dvh place-items-center bg-[#f5f7ff] p-4 dark:bg-[#0d1345]">
       <div className="w-full max-w-sm rounded-2xl bg-card p-6 ring-1 ring-foreground/10 sm:p-8">
         <div className="flex flex-col items-center text-center">
           <Logo />
@@ -101,7 +101,7 @@ export default function AdminLoginPage() {
           </Button>
         </form>
 
-        <div className="mt-5 rounded-lg border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
+        <div className="mt-5 rounded-lg border border-border bg-muted/40 p-3 text-sm text-muted-foreground">
           <p className="flex items-center gap-1.5 font-medium text-foreground">
             <Info className="h-3.5 w-3.5" aria-hidden="true" />
             {t.login.demoHint}
@@ -113,12 +113,12 @@ export default function AdminLoginPage() {
           </p>
         </div>
 
-        <p className="mt-4 text-center text-xs text-muted-foreground">{t.login.note}</p>
+        <p className="mt-4 text-center text-sm text-muted-foreground">{t.login.note}</p>
 
         <p className="mt-4 text-center">
           <Link
             href="/"
-            className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+            className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline [@media(pointer:coarse)]:inline-flex [@media(pointer:coarse)]:min-h-11 [@media(pointer:coarse)]:items-center"
           >
             {t.common.home}
           </Link>

@@ -23,7 +23,7 @@ import { translations } from "@/lib/i18n";
 import type { CertificateType, Template } from "@/lib/types";
 
 const selectClass =
-  "h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30";
+  "h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm dark:bg-input/30 [@media(pointer:coarse)]:h-11";
 
 interface TemplateForm {
   name: string;
@@ -146,7 +146,7 @@ export function TemplatesView() {
         <table className="w-full min-w-[720px] border-collapse text-sm">
           <caption className="sr-only">{t.templates.title}</caption>
           <thead>
-            <tr className="border-b border-border text-left text-xs text-muted-foreground">
+            <tr className="border-b border-border text-left text-sm text-muted-foreground">
               <th scope="col" className="px-3 py-2 font-medium">{t.templates.colName}</th>
               <th scope="col" className="px-3 py-2 font-medium">{t.templates.colType}</th>
               <th scope="col" className="px-3 py-2 font-medium">{t.templates.colIssuer}</th>
@@ -196,7 +196,7 @@ export function TemplatesView() {
                         style={{ backgroundColor: template.accentColor }}
                         aria-hidden="true"
                       />
-                      <span className="font-mono text-xs text-muted-foreground">
+                      <span className="font-mono text-sm text-muted-foreground">
                         {template.accentColor}
                       </span>
                     </span>
@@ -283,7 +283,7 @@ export function TemplatesView() {
                 />
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <label htmlFor="tpl-signer" className="text-sm font-medium">
                     {t.templates.field.signerName}
@@ -325,14 +325,14 @@ export function TemplatesView() {
                     }
                     className="h-8 w-12 cursor-pointer rounded-lg border border-input bg-transparent"
                   />
-                  <span className="font-mono text-xs text-muted-foreground">
+                  <span className="font-mono text-sm text-muted-foreground">
                     {form.accentColor}
                   </span>
                 </div>
               </div>
 
               {formError && (
-                <p className="text-xs text-destructive">{t.certificates.error.required}</p>
+                <p className="text-sm text-destructive">{t.certificates.error.required}</p>
               )}
             </div>
 

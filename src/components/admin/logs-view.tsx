@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import type { VerificationLog, VerificationResult } from "@/lib/types";
 
 const selectClass =
-  "h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30";
+  "h-8 rounded-lg border border-input bg-transparent px-2.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm dark:bg-input/30 [@media(pointer:coarse)]:h-11";
 
 function resultLabel(
   result: VerificationResult,
@@ -37,7 +37,7 @@ function ResultPill({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-sm font-semibold",
         result === "valid" && "bg-emerald-700 text-white",
         result === "revoked" && "bg-red-600 text-white",
         result === "not_found" && "border border-border bg-muted text-muted-foreground"
@@ -129,7 +129,7 @@ export function LogsView() {
       <section className="space-y-4 rounded-xl bg-card p-4 ring-1 ring-foreground/10 sm:p-6">
         <div className="flex flex-wrap items-end gap-3">
           <div className="space-y-1">
-            <label htmlFor="log-result" className="text-xs text-muted-foreground">
+            <label htmlFor="log-result" className="text-sm text-muted-foreground">
               {t.logs.filterResult}
             </label>
             <select
@@ -147,7 +147,7 @@ export function LogsView() {
             </select>
           </div>
           <div className="space-y-1">
-            <label htmlFor="log-from" className="text-xs text-muted-foreground">
+            <label htmlFor="log-from" className="text-sm text-muted-foreground">
               {t.logs.from}
             </label>
             <Input
@@ -159,7 +159,7 @@ export function LogsView() {
             />
           </div>
           <div className="space-y-1">
-            <label htmlFor="log-to" className="text-xs text-muted-foreground">
+            <label htmlFor="log-to" className="text-sm text-muted-foreground">
               {t.logs.to}
             </label>
             <Input
@@ -189,7 +189,7 @@ export function LogsView() {
           <table className="w-full min-w-[640px] border-collapse text-sm">
             <caption className="sr-only">{t.logs.title}</caption>
             <thead>
-              <tr className="border-b border-border bg-muted/40 text-left text-xs text-muted-foreground">
+              <tr className="border-b border-border bg-muted/40 text-left text-sm text-muted-foreground">
                 <th scope="col" className="px-3 py-2 font-medium">{t.logs.colTime}</th>
                 <th scope="col" className="px-3 py-2 font-medium">{t.logs.colId}</th>
                 <th scope="col" className="px-3 py-2 font-medium">{t.logs.colResult}</th>
@@ -220,7 +220,7 @@ export function LogsView() {
                     <td className="px-3 py-3 whitespace-nowrap text-muted-foreground">
                       {formatDateTime(log.timestamp, language)}
                     </td>
-                    <td className="px-3 py-3 font-mono text-xs">{log.certificateId}</td>
+                    <td className="px-3 py-3 font-mono text-sm">{log.certificateId}</td>
                     <td className="px-3 py-3">
                       <ResultPill result={log.result} labels={resultLabels} />
                     </td>

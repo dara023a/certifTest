@@ -11,7 +11,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-sm font-semibold",
         isValid ? "bg-emerald-700 text-white" : "bg-red-600 text-white"
       )}
     >
@@ -28,7 +28,7 @@ export function TypeBadge({
   labels: { webinar: string; internship: string };
 }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-border bg-muted/40 px-2.5 py-0.5 text-xs font-medium text-foreground">
+    <span className="inline-flex items-center rounded-full border border-border bg-muted/40 px-2.5 py-0.5 text-sm font-medium text-foreground">
       {type === "webinar" ? labels.webinar : labels.internship}
     </span>
   );
