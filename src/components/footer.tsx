@@ -8,10 +8,9 @@ import { useSettings } from "@/contexts/settings-context";
 import { translations } from "@/lib/i18n";
 import { ORGANIZATION } from "@/lib/types";
 
-export function SiteFooter() {
+export function SiteFooter({ year }: { year: number }) {
   const { language } = useSettings();
   const t = translations[language];
-  const year = new Date().getFullYear();
 
   const links = [
     { href: ORGANIZATION.social.instagram, label: "Instagram", Icon: Instagram },

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
@@ -32,11 +31,22 @@ export const metadata: Metadata = {
  */
 const themeInitScript = `(function(){try{var t=localStorage.getItem('cert-verify-theme');var d=t!=='light';document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
 
-export default function RootLayout({
+/**
+ * Cached so the current year can be read during prerendering without triggering
+ * the "blocking-prerender-current-time" error.
+ */
+async function getFooterYear(): Promise<number> {
+  "use cache";
+  return new Date().getFullYear();
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const footerYear = await getFooterYear();
+
   return (
     <html lang="id" suppressHydrationWarning>
       <head>
@@ -48,9 +58,7 @@ export default function RootLayout({
         <SettingsProvider>
           <Navbar />
           <main className="flex-1">{children}</main>
-          <Suspense fallback={<footer className="border-t border-border/60" />}>
-            <SiteFooter />
-          </Suspense>
+          <SiteFooter year={footerYear} />
         </SettingsProvider>
       </body>
     </html>
