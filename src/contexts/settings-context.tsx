@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Language, Theme } from "@/lib/types";
 
 interface SettingsContextType {
@@ -10,62 +10,73 @@ interface SettingsContextType {
   setTheme: (theme: Theme) => void;
 }
 
+interface SettingsState {
+  language: Language;
+  theme: Theme;
+  mounted: boolean;
+}
+
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 const STORAGE_KEY_LANG = "cert-verify-lang";
 const STORAGE_KEY_THEME = "cert-verify-theme";
 
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>("id");
-  const [theme, setTheme] = useState<Theme>("light");
-  const [mounted, setMounted] = useState(false);
+  const [state, setState] = useState<SettingsState>({
+    language: "id",
+    theme: "light",
+    mounted: false,
+  });
 
+  // Restore persisted preferences once, after mount (client-only APIs).
   useEffect(() => {
-    setMounted(() => true);
-  }, []);
-
-  useEffect(() => {
-    if (mounted) return;
+    let language: Language = "id";
+    let theme: Theme = "light";
     try {
-      const lang = localStorage.getItem(STORAGE_KEY_LANG) as Language | null;
-      const th = localStorage.getItem(STORAGE_KEY_THEME) as Theme | null;
-      if (lang === "id" || lang === "en") {
-        setLanguage(lang);
+      const storedLang = localStorage.getItem(STORAGE_KEY_LANG);
+      const storedTheme = localStorage.getItem(STORAGE_KEY_THEME);
+      if (storedLang === "id" || storedLang === "en") {
+        language = storedLang;
       }
-      if (th === "light" || th === "dark") {
-        setTheme(th);
+      if (storedTheme === "light" || storedTheme === "dark") {
+        theme = storedTheme;
+      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        theme = "dark";
       }
     } catch (error) {
       console.error(error);
     }
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, [mounted]);
+    setState({ language, theme, mounted: true });
+  }, []);
 
+  // Synchronize preferences to external systems (storage + <html>).
   useEffect(() => {
-    if (!mounted) return;
+    if (!state.mounted) return;
     try {
-      localStorage.setItem(STORAGE_KEY_LANG, language);
+      localStorage.setItem(STORAGE_KEY_LANG, state.language);
+      localStorage.setItem(STORAGE_KEY_THEME, state.theme);
     } catch (error) {
       console.error(error);
     }
-  }, [language, mounted]);
+    document.documentElement.lang = state.language;
+    document.documentElement.classList.toggle("dark", state.theme === "dark");
+  }, [state.language, state.theme, state.mounted]);
 
-  useEffect(() => {
-    if (!mounted) return;
-    try {
-      localStorage.setItem(STORAGE_KEY_THEME, theme);
-    } catch (error) {
-      console.error(error);
-    }
-    document.documentElement.classList.toggle("dark", theme === "dark");
-  }, [theme, mounted]);
+  const setLanguage = useCallback((language: Language) => {
+    setState((prev) => ({ ...prev, language }));
+  }, []);
 
-  return (
-    <SettingsContext.Provider value={{ language, setLanguage, theme, setTheme }}>
-      {children}
-    </SettingsContext.Provider>
+  const setTheme = useCallback((theme: Theme) => {
+    setState((prev) => ({ ...prev, theme }));
+  }, []);
+
+  const value = useMemo(
+    () => ({ language: state.language, setLanguage, theme: state.theme, setTheme }),
+    [state.language, state.theme, setLanguage, setTheme]
   );
+
+  return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
 }
 
 export function useSettings() {

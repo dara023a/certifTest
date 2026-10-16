@@ -1,6 +1,9 @@
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import QRCode from "qrcode";
-import { Certificate } from "./types";
+import { Certificate, ORGANIZATION } from "./types";
+
+/** Single source of truth for the publisher name printed on the PDF. */
+const PUBLISHER = ORGANIZATION.name;
 
 export async function generateCertificatePdf(
   certificate: Certificate,
@@ -30,7 +33,7 @@ export async function generateCertificatePdf(
     borderWidth: 2,
   });
 
-  page.drawText("NUSANTARA LEARNING INSTITUTE", {
+  page.drawText(PUBLISHER.toUpperCase(), {
     x: 60,
     y: 520,
     size: 18,

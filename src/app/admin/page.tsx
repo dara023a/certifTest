@@ -174,7 +174,7 @@ export default function AdminPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="issuer">Penerbit</Label>
-              <Input id="issuer" defaultValue="Nusantara Learning Institute" />
+              <Input id="issuer" defaultValue="Lexa Technologies" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="notes">Catatan (Opsional)</Label>

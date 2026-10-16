@@ -1,25 +1,28 @@
 "use client";
 
 import { useSettings } from "@/contexts/settings-context";
-import { Button } from "@/components/ui/button";
-import { Globe } from "lucide-react";
+import { PillSwitch } from "@/components/ui/pill-switch";
 
 export function LangToggle() {
   const { language, setLanguage } = useSettings();
-  const isId = language === "id";
-  const toggle = () => setLanguage(isId ? "en" : "id");
+  const isEn = language === "en";
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={toggle}
-      className="px-2"
-      title={isId ? "Switch to English" : "Pindah ke Bahasa Indonesia"}
-      aria-label={isId ? "Switch to English" : "Pindah ke Bahasa Indonesia"}
-    >
-      <Globe className="h-4 w-4" />
-      <span className="text-xs">{isId ? "ID" : "EN"}</span>
-    </Button>
+    <PillSwitch
+      checked={isEn}
+      onCheckedChange={(checked) => setLanguage(checked ? "en" : "id")}
+      aria-label={isEn ? "Ganti ke Bahasa Indonesia" : "Switch to English"}
+      title={isEn ? "Bahasa Indonesia" : "English"}
+      offContent={
+        <span className="text-[10px] font-semibold leading-none" aria-hidden="true">
+          ID
+        </span>
+      }
+      onContent={
+        <span className="text-[10px] font-semibold leading-none" aria-hidden="true">
+          EN
+        </span>
+      }
+    />
   );
 }

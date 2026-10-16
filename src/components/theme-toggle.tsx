@@ -1,24 +1,22 @@
 "use client";
 
-import { useSettings } from "@/contexts/settings-context";
-import { Button } from "@/components/ui/button";
 import { Moon, Sun } from "lucide-react";
+
+import { useSettings } from "@/contexts/settings-context";
+import { PillSwitch } from "@/components/ui/pill-switch";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useSettings();
   const isDark = theme === "dark";
-  const toggle = () => setTheme(isDark ? "light" : "dark");
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={toggle}
-      className="px-2"
-      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-    >
-      {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-    </Button>
+    <PillSwitch
+      checked={isDark}
+      onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+      aria-label={isDark ? "Aktifkan mode terang" : "Aktifkan mode gelap"}
+      title={isDark ? "Mode Terang" : "Mode Gelap"}
+      offContent={<Sun className="h-3.5 w-3.5" aria-hidden="true" />}
+      onContent={<Moon className="h-3.5 w-3.5" aria-hidden="true" />}
+    />
   );
 }

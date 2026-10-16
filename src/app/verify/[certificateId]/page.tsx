@@ -15,7 +15,7 @@ export default async function VerifyPage({ params }: VerifyPageProps) {
   }
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
+    <div className="mx-auto flex max-w-3xl flex-col px-4 py-10 sm:px-6 lg:px-8">
       <CertificatePreviewCard certificate={certificate} />
     </div>
   );
