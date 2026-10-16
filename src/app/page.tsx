@@ -32,7 +32,7 @@ export default function Home() {
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-10 px-4 py-12 sm:px-6 lg:px-8">
       <section className="flex flex-col items-center text-center">
-        <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-emerald-500 text-white shadow-sm">
+        <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-strong text-white">
           <QrCode className="h-7 w-7" aria-hidden="true" />
         </div>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{t.homeTitle}</h1>

@@ -24,14 +24,14 @@ const STORAGE_KEY_THEME = "cert-verify-theme";
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<SettingsState>({
     language: "id",
-    theme: "light",
+    theme: "dark",
     mounted: false,
   });
 
   // Restore persisted preferences once, after mount (client-only APIs).
   useEffect(() => {
     let language: Language = "id";
-    let theme: Theme = "light";
+    let theme: Theme = "dark";
     try {
       const storedLang = localStorage.getItem(STORAGE_KEY_LANG);
       const storedTheme = localStorage.getItem(STORAGE_KEY_THEME);
@@ -40,8 +40,6 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       }
       if (storedTheme === "light" || storedTheme === "dark") {
         theme = storedTheme;
-      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        theme = "dark";
       }
     } catch (error) {
       console.error(error);

@@ -30,7 +30,7 @@ export const metadata: Metadata = {
  * Applies the persisted theme before the first paint to avoid a flash of the
  * wrong theme. See node_modules/next/dist/docs/01-app/02-guides/preventing-flash-before-hydration.md
  */
-const themeInitScript = `(function(){try{var t=localStorage.getItem('cert-verify-theme');var d=t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
+const themeInitScript = `(function(){try{var t=localStorage.getItem('cert-verify-theme');var d=t!=='light';document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
 
 export default function RootLayout({
   children,

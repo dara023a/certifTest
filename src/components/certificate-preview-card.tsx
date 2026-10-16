@@ -127,8 +127,8 @@ export function CertificatePreviewCard({ certificate }: CertificatePreviewCardPr
           className={cn(
             "gap-1.5 px-3 py-1 text-xs font-semibold",
             isValid
-              ? "border-transparent bg-emerald-600 text-white hover:bg-emerald-600"
-              : "border-transparent bg-destructive text-white hover:bg-destructive"
+              ? "border-transparent bg-emerald-700 text-white hover:bg-emerald-700"
+              : "border-transparent bg-red-600 text-white hover:bg-red-600"
           )}
         >
           {isValid ? (

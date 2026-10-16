@@ -29,7 +29,7 @@ export async function generateCertificatePdf(
     y: 24,
     width: 794,
     height: 547,
-    borderColor: rgb(15 / 255, 23 / 255, 42 / 255),
+    borderColor: rgb(13 / 255, 19 / 255, 69 / 255),
     borderWidth: 2,
   });
 
@@ -38,7 +38,7 @@ export async function generateCertificatePdf(
     y: 520,
     size: 18,
     font,
-    color: rgb(30 / 255, 64 / 255, 175 / 255),
+    color: rgb(37 / 255, 98 / 255, 249 / 255),
   });
 
   page.drawText("SERTIFIKAT DIGITAL (DEMONSTRASI)", {
