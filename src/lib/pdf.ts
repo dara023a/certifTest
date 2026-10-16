@@ -14,7 +14,10 @@ export async function generateCertificatePdf(
   const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-  const qrDataUrl = await QRCode.toDataURL(verificationUrl, {
+  // Tag QR visits so the admin verification log can distinguish the source.
+  const separator = verificationUrl.includes("?") ? "&" : "?";
+  const qrUrl = `${verificationUrl}${separator}src=qr`;
+  const qrDataUrl = await QRCode.toDataURL(qrUrl, {
     width: 128,
     margin: 1,
     color: {

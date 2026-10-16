@@ -26,7 +26,7 @@ export default function Home() {
       return;
     }
     setError(null);
-    router.push(`/verify/${encodeURIComponent(trimmed)}`);
+    router.push(`/verify/${encodeURIComponent(trimmed)}?src=manual`);
   };
 
   return (

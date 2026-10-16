@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/navbar";
-import { SiteFooter } from "@/components/footer";
 import { SettingsProvider } from "@/contexts/settings-context";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const jakartaSans = Plus_Jakarta_Sans({
   variable: "--font-sans",
@@ -31,22 +30,11 @@ export const metadata: Metadata = {
  */
 const themeInitScript = `(function(){try{var t=localStorage.getItem('cert-verify-theme');var d=t!=='light';document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
 
-/**
- * Cached so the current year can be read during prerendering without triggering
- * the "blocking-prerender-current-time" error.
- */
-async function getFooterYear(): Promise<number> {
-  "use cache";
-  return new Date().getFullYear();
-}
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const footerYear = await getFooterYear();
-
   return (
     <html lang="id" suppressHydrationWarning>
       <head>
@@ -56,9 +44,7 @@ export default async function RootLayout({
         className={`${jakartaSans.variable} ${jetbrainsMono.variable} flex min-h-screen flex-col bg-background font-sans antialiased`}
       >
         <SettingsProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <SiteFooter year={footerYear} />
+          <TooltipProvider>{children}</TooltipProvider>
         </SettingsProvider>
       </body>
     </html>

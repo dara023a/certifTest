@@ -15,6 +15,7 @@ export interface WebinarCertificate {
   speaker: string;
   speakerEn?: string;
   eventDate: string;
+  templateId?: string;
 }
 
 export interface InternshipCertificate {
@@ -33,9 +34,32 @@ export interface InternshipCertificate {
   departmentEn?: string;
   internshipPeriod: string;
   internshipPeriodEn?: string;
+  templateId?: string;
 }
 
 export type Certificate = WebinarCertificate | InternshipCertificate;
+
+export interface Template {
+  id: string;
+  name: string;
+  type: CertificateType;
+  issuer: string;
+  signerName: string;
+  signerTitle: string;
+  accentColor: string;
+  createdAt: string;
+}
+
+export type VerificationResult = "valid" | "revoked" | "not_found";
+export type VerificationSource = "qr" | "manual" | "link";
+
+export interface VerificationLog {
+  id: string;
+  timestamp: string;
+  certificateId: string;
+  result: VerificationResult;
+  source: VerificationSource;
+}
 
 export const ORGANIZATION = {
   name: "Lexa Technologies",
