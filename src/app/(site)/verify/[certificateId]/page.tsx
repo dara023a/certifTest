@@ -25,5 +25,5 @@ export default async function VerifyPage({ params }: VerifyPageProps) {
 }
 
 export async function generateStaticParams() {
-  return [{ certificateId: "WEB-2026-001" }];
+  return [{ certificateId: "LEXA-WBNR-2026-001" }];
 }

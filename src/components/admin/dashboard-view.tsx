@@ -24,6 +24,20 @@ import { adminActions, useAdminStore } from "@/lib/admin-store";
 import { translations } from "@/lib/i18n";
 import { certificateHeadline, formatDateTime, formatWeekday } from "@/lib/admin-format";
 
+/** Placeholder rows shown while the client store is loading. */
+function ListSkeleton({ rows = 3 }: { rows?: number }) {
+  return (
+    <ul className="mt-3 divide-y divide-border" aria-hidden="true">
+      {Array.from({ length: rows }).map((_, index) => (
+        <li key={index} className="py-3">
+          <div className="h-4 w-2/3 animate-pulse rounded bg-muted" />
+          <div className="mt-2 h-3 w-1/2 animate-pulse rounded bg-muted" />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function DashboardView() {
   const { language } = useSettings();
   const t = translations[language].admin;
@@ -117,11 +131,27 @@ export function DashboardView() {
       <section className="rounded-xl bg-card p-4 ring-1 ring-foreground/10 sm:p-6">
         <h2 className="text-base font-semibold tracking-tight">{t.dashboard.chartTitle}</h2>
         <div className="mt-4">
-          <BarChart
-            data={chartData}
-            emptyLabel={t.dashboard.chartEmpty}
-            ariaLabel={t.dashboard.chartTitle}
-          />
+          {ready ? (
+            <BarChart
+              data={chartData}
+              emptyLabel={t.dashboard.chartEmpty}
+              ariaLabel={t.dashboard.chartTitle}
+            />
+          ) : (
+            <div className="flex h-40 items-end gap-2" aria-hidden="true">
+              {chartData.map((datum, index) => (
+                <div key={datum.label} className="flex flex-1 flex-col items-center gap-2">
+                  <div className="flex w-full flex-1 items-end">
+                    <div
+                      className="mx-auto w-full max-w-10 animate-pulse rounded-t-md bg-muted"
+                      style={{ height: `${25 + ((index * 13) % 60)}%` }}
+                    />
+                  </div>
+                  <span className="text-sm whitespace-nowrap text-transparent">{index}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -135,27 +165,31 @@ export function DashboardView() {
               <Link href="/admin/certificates">{t.dashboard.viewAll}</Link>
             </Button>
           </div>
-          <ul className="mt-3 divide-y divide-border">
-            {latestCertificates.length === 0 && (
-              <li className="py-4 text-sm text-muted-foreground">
-                {t.dashboard.noCertificates}
-              </li>
-            )}
-            {latestCertificates.map((certificate) => (
-              <li key={certificate.id} className="flex items-center justify-between gap-3 py-3">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium">{certificate.recipientName}</p>
-                  <p className="truncate font-mono text-sm text-muted-foreground">
-                    {certificate.certificateId} · {certificateHeadline(certificate)}
-                  </p>
-                </div>
-                <StatusBadge
-                  status={certificate.status}
-                  labels={{ valid: t.common.valid, revoked: t.common.revoked }}
-                />
-              </li>
-            ))}
-          </ul>
+          {!ready ? (
+            <ListSkeleton />
+          ) : (
+            <ul className="mt-3 divide-y divide-border">
+              {latestCertificates.length === 0 && (
+                <li className="py-4 text-sm text-muted-foreground">
+                  {t.dashboard.noCertificates}
+                </li>
+              )}
+              {latestCertificates.map((certificate) => (
+                <li key={certificate.id} className="flex items-center justify-between gap-3 py-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{certificate.recipientName}</p>
+                    <p className="truncate font-mono text-sm text-muted-foreground">
+                      {certificate.certificateId} · {certificateHeadline(certificate)}
+                    </p>
+                  </div>
+                  <StatusBadge
+                    status={certificate.status}
+                    labels={{ valid: t.common.valid, revoked: t.common.revoked }}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
 
         <section className="rounded-xl bg-card p-4 ring-1 ring-foreground/10 sm:p-6">
@@ -167,28 +201,32 @@ export function DashboardView() {
               <Link href="/admin/logs">{t.dashboard.viewAll}</Link>
             </Button>
           </div>
-          <ul className="mt-3 divide-y divide-border">
-            {latestLogs.length === 0 && (
-              <li className="py-4 text-sm text-muted-foreground">{t.dashboard.noLogs}</li>
-            )}
-            {latestLogs.map((log) => (
-              <li key={log.id} className="flex items-center justify-between gap-3 py-3">
-                <div className="min-w-0">
-                  <p className="truncate font-mono text-sm">{log.certificateId}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {formatDateTime(log.timestamp, language)}
-                  </p>
-                </div>
-                <span className="text-sm font-semibold">
-                  {log.result === "valid"
-                    ? t.logs.resultValid
-                    : log.result === "revoked"
-                      ? t.logs.resultRevoked
-                      : t.logs.resultNotFound}
-                </span>
-              </li>
-            ))}
-          </ul>
+          {!ready ? (
+            <ListSkeleton />
+          ) : (
+            <ul className="mt-3 divide-y divide-border">
+              {latestLogs.length === 0 && (
+                <li className="py-4 text-sm text-muted-foreground">{t.dashboard.noLogs}</li>
+              )}
+              {latestLogs.map((log) => (
+                <li key={log.id} className="flex items-center justify-between gap-3 py-3">
+                  <div className="min-w-0">
+                    <p className="truncate font-mono text-sm">{log.certificateId}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {formatDateTime(log.timestamp, language)}
+                    </p>
+                  </div>
+                  <span className="text-sm font-semibold">
+                    {log.result === "valid"
+                      ? t.logs.resultValid
+                      : log.result === "revoked"
+                        ? t.logs.resultRevoked
+                        : t.logs.resultNotFound}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       </div>
 

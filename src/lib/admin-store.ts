@@ -11,9 +11,20 @@ import {
   VerificationSource,
 } from "./types";
 
-export const ADMIN_SCHEMA_VERSION = 1;
+export const ADMIN_SCHEMA_VERSION = 2;
 const STORAGE_KEY = "lexa-admin-store";
 const MAX_LOGS = 500;
+const MAX_LOG_ID_LENGTH = 64;
+
+/**
+ * Schema v1 used short demo IDs (`WEB-2026-001`). v2 standardises on the
+ * generated `LEXA-*` format. Existing user data is migrated, not discarded.
+ */
+const LEGACY_CERTIFICATE_ID_MAP: Record<string, string> = {
+  "WEB-2026-001": "LEXA-WBNR-2026-001",
+  "WEB-2026-002": "LEXA-WBNR-2026-002",
+  "INT-2026-001": "LEXA-INTR-2026-001",
+};
 
 export interface AdminData {
   version: number;
@@ -74,17 +85,17 @@ function demoLogs(): VerificationLog[] {
   const now = Date.now();
   const day = 86_400_000;
   const rows: Array<[number, string, VerificationResult, VerificationSource]> = [
-    [0, "WEB-2026-001", "valid", "qr"],
-    [0, "INT-2026-001", "valid", "manual"],
-    [0, "WEB-2026-999", "not_found", "link"],
-    [1, "WEB-2026-002", "revoked", "link"],
-    [1, "WEB-2026-001", "valid", "link"],
-    [2, "INT-2026-001", "valid", "qr"],
-    [3, "WEB-2026-001", "valid", "manual"],
-    [3, "WEB-2026-002", "revoked", "qr"],
-    [4, "WEB-2026-001", "valid", "link"],
-    [5, "INT-2026-001", "valid", "manual"],
-    [6, "WEB-2026-001", "valid", "link"],
+    [0, "LEXA-WBNR-2026-001", "valid", "qr"],
+    [0, "LEXA-INTR-2026-001", "valid", "manual"],
+    [0, "LEXA-WBNR-2026-999", "not_found", "link"],
+    [1, "LEXA-WBNR-2026-002", "revoked", "link"],
+    [1, "LEXA-WBNR-2026-001", "valid", "link"],
+    [2, "LEXA-INTR-2026-001", "valid", "qr"],
+    [3, "LEXA-WBNR-2026-001", "valid", "manual"],
+    [3, "LEXA-WBNR-2026-002", "revoked", "qr"],
+    [4, "LEXA-WBNR-2026-001", "valid", "link"],
+    [5, "LEXA-INTR-2026-001", "valid", "manual"],
+    [6, "LEXA-WBNR-2026-001", "valid", "link"],
   ];
   return rows.map(([daysAgo, certificateId, result, source], index) => ({
     id: `log-seed-${index}`,
@@ -112,6 +123,61 @@ function seedData(): AdminData {
 let cache: AdminData | null = null;
 let lastRaw: string | null = null;
 const listeners = new Set<() => void>();
+const storageErrorListeners = new Set<() => void>();
+
+/** Notifies subscribers when a write to `localStorage` fails (quota/private mode). */
+export function subscribeStorageError(callback: () => void): () => void {
+  storageErrorListeners.add(callback);
+  return () => {
+    storageErrorListeners.delete(callback);
+  };
+}
+
+function emitStorageError(): void {
+  for (const listener of storageErrorListeners) {
+    listener();
+  }
+}
+
+/**
+ * Upgrades stored data to the current schema without discarding user changes.
+ * Unknown/future versions keep their fields as-is (only `version` is updated).
+ */
+function migrate(data: AdminData): AdminData {
+  let next: AdminData = {
+    ...EMPTY_ADMIN_DATA,
+    ...data,
+    version: ADMIN_SCHEMA_VERSION,
+  };
+
+  if (typeof data.version !== "number" || data.version < 2) {
+    next = {
+      ...next,
+      certificates: next.certificates.map((certificate) => ({
+        ...certificate,
+        certificateId:
+          LEGACY_CERTIFICATE_ID_MAP[certificate.certificateId] ??
+          certificate.certificateId,
+      })),
+      logs: next.logs.map((log) => ({
+        ...log,
+        certificateId: (
+          LEGACY_CERTIFICATE_ID_MAP[log.certificateId] ?? log.certificateId
+        ).slice(0, MAX_LOG_ID_LENGTH),
+      })),
+    };
+  } else {
+    next = {
+      ...next,
+      logs: next.logs.map((log) => ({
+        ...log,
+        certificateId: log.certificateId.slice(0, MAX_LOG_ID_LENGTH),
+      })),
+    };
+  }
+
+  return next;
+}
 
 function read(): AdminData {
   if (typeof window === "undefined") {
@@ -130,16 +196,33 @@ function read(): AdminData {
   }
 
   if (raw) {
+    let parsed: AdminData | null = null;
     try {
-      const parsed = JSON.parse(raw) as AdminData;
-      if (parsed && parsed.version === ADMIN_SCHEMA_VERSION) {
-        cache = { ...EMPTY_ADMIN_DATA, ...parsed };
-        lastRaw = raw;
-        return cache;
-      }
+      parsed = JSON.parse(raw) as AdminData;
     } catch {
-      // Corrupt data — fall through and reseed.
+      parsed = null;
     }
+
+    if (parsed && typeof parsed === "object" && typeof parsed.version === "number") {
+      // Migrate rather than silently reseeding when the schema version changed.
+      const migrated = migrate(parsed);
+      cache = migrated;
+      const serialized = JSON.stringify(migrated);
+      if (serialized !== raw) {
+        try {
+          window.localStorage.setItem(STORAGE_KEY, serialized);
+          lastRaw = serialized;
+        } catch {
+          lastRaw = raw;
+        }
+      } else {
+        lastRaw = raw;
+      }
+      return migrated;
+    }
+
+    // Unreadable/foreign shape cannot be migrated — reseed with a warning.
+    console.warn("[admin-store] Stored data is unreadable; reseeding demo data.");
   }
 
   const seeded = seedData();
@@ -193,6 +276,7 @@ function persist(next: AdminData): void {
     lastRaw = serialized;
   } catch {
     lastRaw = null;
+    emitStorageError();
   }
   emit();
 }
@@ -290,9 +374,13 @@ export const adminActions = {
     }));
   },
   addLog(entry: VerificationLog): void {
+    const normalized: VerificationLog = {
+      ...entry,
+      certificateId: entry.certificateId.slice(0, MAX_LOG_ID_LENGTH),
+    };
     updateAdminData((data) => ({
       ...data,
-      logs: [entry, ...data.logs].slice(0, MAX_LOGS),
+      logs: [normalized, ...data.logs].slice(0, MAX_LOGS),
     }));
   },
   clearLogs(): void {

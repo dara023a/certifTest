@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { Info, LogIn, ShieldCheck } from "lucide-react";
 
 import { Logo } from "@/components/logo";
+import { LangToggle } from "@/components/lang-toggle";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,7 +49,11 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="grid min-h-dvh place-items-center bg-[#f5f7ff] p-4 dark:bg-[#0d1345]">
+    <div className="relative grid min-h-dvh place-items-center bg-[#f5f7ff] p-4 dark:bg-[#0d1345]">
+      <div className="absolute right-4 top-4 flex items-center gap-2">
+        <LangToggle />
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-sm rounded-2xl bg-card p-6 ring-1 ring-foreground/10 sm:p-8">
         <div className="flex flex-col items-center text-center">
           <Logo />

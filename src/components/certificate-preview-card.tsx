@@ -103,7 +103,11 @@ export function CertificatePreviewCard({ certificate }: CertificatePreviewCardPr
             {t.previewPageTitle}
           </h1>
         </div>
-        <Button onClick={download} disabled={loading || !verificationUrl}>
+        <Button
+          onClick={download}
+          disabled={loading || !verificationUrl || !isValid}
+          title={!isValid ? t.revokedPdfNote : undefined}
+        >
           <Download className="mr-2 h-4 w-4" aria-hidden="true" />
           {loading ? t.preparingPdf : t.downloadPdf}
         </Button>
@@ -118,8 +122,11 @@ export function CertificatePreviewCard({ certificate }: CertificatePreviewCardPr
         unavailableDesc={t.previewUnavailableDesc}
         downloadLabel={t.downloadPdf}
         onDownload={download}
+        downloadDisabled={!isValid}
       />
-      <p className="text-sm text-muted-foreground">{t.pdfNote}</p>
+      <p className="text-sm text-muted-foreground">
+        {isValid ? t.pdfNote : t.revokedPdfNote}
+      </p>
 
       {/* Verification status */}
       <section className="rounded-xl border border-border bg-card p-6">
@@ -180,7 +187,12 @@ export function CertificatePreviewCard({ certificate }: CertificatePreviewCardPr
       </section>
 
       {/* Share */}
-      <SharePanel caption={caption} verificationUrl={verificationUrl} onDownload={download} />
+      <SharePanel
+        caption={caption}
+        verificationUrl={verificationUrl}
+        onDownload={download}
+        pdfDisabled={!isValid}
+      />
 
       {/* Verified strip */}
       <section className="flex gap-4 rounded-xl border border-border bg-card p-6">

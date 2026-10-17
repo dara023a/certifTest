@@ -19,11 +19,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { useSettings } from "@/contexts/settings-context";
 import { adminActions, newId, useAdminStore } from "@/lib/admin-store";
+import { todayLocalISODate } from "@/lib/admin-format";
 import { translations } from "@/lib/i18n";
 import type { CertificateType, Template } from "@/lib/types";
 
 const selectClass =
-  "h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm dark:bg-input/30 [@media(pointer:coarse)]:h-11";
+  "h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm dark:bg-input/30 disabled:cursor-not-allowed disabled:opacity-60 [@media(pointer:coarse)]:h-11";
 
 interface TemplateForm {
   name: string;
@@ -65,6 +66,8 @@ export function TemplatesView() {
     return map;
   }, [certificates]);
 
+  const editingInUse = editingId ? (usageById.get(editingId) ?? 0) > 0 : false;
+
   const openCreate = () => {
     setEditingId(null);
     setForm(emptyForm);
@@ -103,7 +106,7 @@ export function TemplatesView() {
         accentColor: form.accentColor,
         createdAt:
           templates.find((template) => template.id === editingId)?.createdAt ??
-          new Date().toISOString().slice(0, 10),
+          todayLocalISODate(),
       });
     } else {
       adminActions.addTemplate({
@@ -114,7 +117,7 @@ export function TemplatesView() {
         signerName: form.signerName.trim(),
         signerTitle: form.signerTitle.trim(),
         accentColor: form.accentColor,
-        createdAt: new Date().toISOString().slice(0, 10),
+        createdAt: todayLocalISODate(),
       });
     }
     toast(t.templates.saved, "success");
@@ -262,6 +265,7 @@ export function TemplatesView() {
                   id="tpl-type"
                   className={selectClass}
                   value={form.type}
+                  disabled={editingInUse}
                   onChange={(event) =>
                     setForm((f) => ({ ...f, type: event.target.value as CertificateType }))
                   }
@@ -269,6 +273,9 @@ export function TemplatesView() {
                   <option value="webinar">{t.common.webinar}</option>
                   <option value="internship">{t.common.internship}</option>
                 </select>
+                {editingInUse && (
+                  <p className="text-sm text-muted-foreground">{t.templates.typeLockedHint}</p>
+                )}
               </div>
 
               <div className="space-y-1.5">
@@ -350,7 +357,7 @@ export function TemplatesView() {
         open={deleteTarget !== null}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
         title={t.templates.deleteTitle}
-        description={t.templates.deleteDesc}
+        description={deleteTarget ? t.templates.deleteDesc(deleteTarget.name) : ""}
         confirmLabel={t.common.delete}
         cancelLabel={t.common.cancel}
         destructive

@@ -42,3 +42,15 @@ export function certificateHeadline(certificate: Certificate): string {
     ? certificate.eventTitle
     : certificate.position;
 }
+
+/**
+ * Today's date as `YYYY-MM-DD` in the user's local timezone.
+ * `new Date().toISOString().slice(0, 10)` returns UTC, which is a day behind for
+ * users in UTC+7 before 07:00 local time.
+ */
+export function todayLocalISODate(date: Date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}

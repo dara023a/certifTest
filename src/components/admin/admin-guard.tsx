@@ -3,7 +3,9 @@
 import { useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 
+import { useSettings } from "@/contexts/settings-context";
 import { isAuthenticated } from "@/lib/admin-auth";
+import { translations } from "@/lib/i18n";
 
 const emptySubscribe = () => () => {};
 const alwaysTrue = () => true;
@@ -15,6 +17,8 @@ const alwaysFalse = () => false;
  */
 export function AdminGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const { language } = useSettings();
+  const t = translations[language].admin;
   const isClient = useSyncExternalStore(emptySubscribe, alwaysTrue, alwaysFalse);
   const authed = useSyncExternalStore(emptySubscribe, isAuthenticated, alwaysFalse);
 
@@ -27,7 +31,7 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
   if (!isClient || !authed) {
     return (
       <div className="grid min-h-dvh place-items-center text-sm text-muted-foreground">
-        <span role="status">Loading…</span>
+        <span role="status">{t.common.loading}</span>
       </div>
     );
   }

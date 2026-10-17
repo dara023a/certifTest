@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { QrCode, Search } from "lucide-react";
 
@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useSettings } from "@/contexts/settings-context";
+import { useAdminStore } from "@/lib/admin-store";
+import { certificateHeadline } from "@/lib/admin-format";
 import { translations } from "@/lib/i18n";
 
 export default function Home() {
@@ -17,6 +19,11 @@ export default function Home() {
   const router = useRouter();
   const { language } = useSettings();
   const t = translations[language];
+  const { certificates, ready } = useAdminStore();
+
+  // Derive the example list from live data so it never goes stale when the
+  // admin edits or removes the seeded certificates.
+  const examples = useMemo(() => certificates.slice(0, 3), [certificates]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -50,7 +57,7 @@ export default function Home() {
               id="certificateId"
               value={certificateId}
               onChange={(event) => setCertificateId(event.target.value)}
-              placeholder="WEB-2026-001 / INT-2026-001"
+              placeholder="LEXA-WBNR-2026-001 / LEXA-INTR-2026-001"
               autoComplete="off"
             />
           </div>
@@ -68,11 +75,15 @@ export default function Home() {
         <div className="mt-6 space-y-2 text-sm text-muted-foreground">
           <p className="font-medium text-foreground">{t.exampleIds}</p>
           <ul className="list-disc space-y-1 pl-5">
-            <li>WEB-2026-001 — {t.webinar}: Introduction to Cybersecurity</li>
-            <li>INT-2026-001 — {t.internship}: Software Engineering Intern</li>
-            <li>
-              WEB-2026-002 — {t.webinar} ({t.revoked})
-            </li>
+            {examples.map((certificate) => (
+              <li key={certificate.id}>
+                {certificate.certificateId} —{" "}
+                {certificate.type === "webinar" ? t.webinar : t.internship}:{" "}
+                {certificateHeadline(certificate)}
+                {certificate.status === "revoked" ? ` (${t.revoked})` : ""}
+              </li>
+            ))}
+            {ready && examples.length === 0 && <li>{t.admin.common.empty}</li>}
           </ul>
           <p className="mt-3">{t.qrDesc}</p>
         </div>

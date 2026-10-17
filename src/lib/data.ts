@@ -3,7 +3,7 @@ import { Certificate } from "./types";
 export const certificates: Certificate[] = [
   {
     id: "cert-web-001",
-    certificateId: "WEB-2026-001",
+    certificateId: "LEXA-WBNR-2026-001",
     type: "webinar",
     recipientName: "Andi Pratama",
     issuer: "Lexa Technologies",
@@ -15,7 +15,7 @@ export const certificates: Certificate[] = [
   },
   {
     id: "cert-int-001",
-    certificateId: "INT-2026-001",
+    certificateId: "LEXA-INTR-2026-001",
     type: "internship",
     recipientName: "Siti Rahmawati",
     issuer: "Lexa Technologies",
@@ -27,7 +27,7 @@ export const certificates: Certificate[] = [
   },
   {
     id: "cert-web-002",
-    certificateId: "WEB-2026-002",
+    certificateId: "LEXA-WBNR-2026-002",
     type: "webinar",
     recipientName: "Dummy Revoked Recipient",
     issuer: "Lexa Technologies",

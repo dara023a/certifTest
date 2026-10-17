@@ -21,12 +21,18 @@ interface CertificateVerifyViewProps {
   initialCertificate: Certificate | null;
 }
 
-function readSource(): VerificationSource {
+/**
+ * `admin` is a UI-only source used by the dashboard "view" link: the request
+ * must not be recorded as a real public verification.
+ */
+type Source = VerificationSource | "admin";
+
+function readSource(): Source {
   if (typeof window === "undefined") {
     return "link";
   }
   const value = new URLSearchParams(window.location.search).get("src");
-  if (value === "qr" || value === "manual") {
+  if (value === "qr" || value === "manual" || value === "admin") {
     return value;
   }
   return "link";
@@ -42,22 +48,28 @@ export function CertificateVerifyView({
   const logged = useRef(false);
 
   const key = certificateId.trim().toLowerCase();
-  const certificate =
-    initialCertificate ??
-    (ready
-      ? certificates.find((item) => item.certificateId.toLowerCase() === key)
-      : undefined);
+  // Once the client store is ready it becomes the source of truth, so admin
+  // edits/revocations/deletions are reflected on the public page. The
+  // server-rendered certificate is only used for the first paint/hydration.
+  const certificate = ready
+    ? certificates.find((item) => item.certificateId.toLowerCase() === key)
+    : initialCertificate ?? undefined;
 
   // Record the visit once the store is available on the client.
   useEffect(() => {
     if (!ready || logged.current) return;
     logged.current = true;
+    const source = readSource();
+    if (source === "admin") {
+      // Dashboard preview: real visits should not be polluted by admin clicks.
+      return;
+    }
     actions.addLog({
       id: newId(),
       timestamp: new Date().toISOString(),
       certificateId,
       result: certificate ? certificate.status : "not_found",
-      source: readSource(),
+      source,
     });
   }, [ready, certificate, certificateId, actions]);
 

@@ -62,7 +62,7 @@ function RowActions({ certificate }: { certificate: Certificate }) {
         <TooltipTrigger
           render={
             <Link
-              href={`/verify/${certificate.certificateId}`}
+              href={`/verify/${certificate.certificateId}?src=admin`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={t.common.view}
@@ -141,10 +141,10 @@ function RowActions({ certificate }: { certificate: Certificate }) {
         }
         description={
           confirm === "delete"
-            ? t.certificates.deleteDesc
+            ? t.certificates.deleteDesc(certificate.recipientName, certificate.certificateId)
             : confirm === "revoke"
-              ? t.certificates.revokeDesc
-              : t.certificates.restoreDesc
+              ? t.certificates.revokeDesc(certificate.recipientName, certificate.certificateId)
+              : t.certificates.restoreDesc(certificate.recipientName, certificate.certificateId)
         }
         confirmLabel={
           confirm === "delete"

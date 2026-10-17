@@ -238,7 +238,7 @@ function Breadcrumbs() {
   }, [pathname, t]);
 
   return (
-    <nav aria-label="Breadcrumb">
+    <nav aria-label={t.common.breadcrumb}>
       <ol className="flex items-center gap-1.5 rounded-xl bg-card px-3 py-1.5 text-sm text-muted-foreground ring-1 ring-foreground/10">
         <li>
           <Link

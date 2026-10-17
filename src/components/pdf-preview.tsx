@@ -14,6 +14,8 @@ interface PdfPreviewProps {
   unavailableDesc: string;
   downloadLabel: string;
   onDownload: () => void;
+  /** Hides/disables the download fallback (e.g. revoked certificates). */
+  downloadDisabled?: boolean;
   className?: string;
 }
 
@@ -84,6 +86,7 @@ export function PdfPreview({
   unavailableDesc,
   downloadLabel,
   onDownload,
+  downloadDisabled,
   className,
 }: PdfPreviewProps) {
   const canEmbed = useSyncExternalStore(emptySubscribe, detectPdfEmbed, () => true);
@@ -93,7 +96,7 @@ export function PdfPreview({
     unavailableDesc,
     downloadLabel,
     onDownload,
-    canDownload: Boolean(url),
+    canDownload: Boolean(url) && !downloadDisabled,
   };
 
   return (

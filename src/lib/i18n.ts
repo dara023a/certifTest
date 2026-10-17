@@ -19,6 +19,12 @@ export const translations = {
     backHome: "Kembali ke Beranda",
     adminLink: "Dasbor Admin",
 
+    // Settings toggles
+    switchToEnglish: "Ganti ke Bahasa Inggris",
+    switchToIndonesian: "Ganti ke Bahasa Indonesia",
+    switchToLight: "Aktifkan mode terang",
+    switchToDark: "Aktifkan mode gelap",
+
     // Certificate page
     back: "Kembali",
     previewPageTitle: "Preview Sertifikat",
@@ -26,6 +32,8 @@ export const translations = {
     preparingPdf: "Menyiapkan PDF...",
     pdfNote:
       "Catatan: PDF ini merupakan sertifikat contoh/demonstrasi, bukan sertifikat resmi.",
+    revokedPdfNote:
+      "Unduhan PDF dinonaktifkan untuk sertifikat yang dicabut. Halaman verifikasi tetap dapat dibagikan.",
     previewUnavailableTitle: "Pratinjau PDF tidak tersedia",
     previewUnavailableDesc:
       "Peramban Anda tidak dapat menampilkan pratinjau PDF secara langsung. Silakan unduh untuk melihat isinya.",
@@ -148,6 +156,10 @@ export const translations = {
         createdAt: "Dibuat",
         optional: "Opsional",
         selectTemplate: "— Pilih template —",
+        breadcrumb: "Remah navigasi",
+        notifications: "Notifikasi",
+        storageError:
+          "Gagal menyimpan ke penyimpanan peramban. Perubahan mungkin tidak tersimpan (penyimpanan penuh atau mode privat).",
       },
       dashboard: {
         title: "Dashboard",
@@ -182,11 +194,20 @@ export const translations = {
         emptyTitle: "Belum ada sertifikat",
         emptyDesc: "Tambahkan sertifikat pertama atau sesuaikan filter.",
         deleteTitle: "Hapus sertifikat?",
-        deleteDesc: "Tindakan ini tidak dapat dibatalkan.",
+        deleteDesc: (name: string, id: string) =>
+          `Hapus sertifikat ${name} (${id})? Tindakan ini tidak dapat dibatalkan.`,
         revokeTitle: "Cabut sertifikat?",
-        revokeDesc: "Sertifikat akan ditandai sebagai dicabut pada halaman verifikasi publik.",
+        revokeDesc: (name: string, id: string) =>
+          `Sertifikat ${name} (${id}) akan ditandai sebagai dicabut pada halaman verifikasi publik.`,
         restoreTitle: "Pulihkan sertifikat?",
-        restoreDesc: "Sertifikat akan kembali berstatus valid.",
+        restoreDesc: (name: string, id: string) =>
+          `Sertifikat ${name} (${id}) akan kembali berstatus valid.`,
+        idLockedHint:
+          "Certificate ID dan tipe tidak dapat diubah agar link verifikasi permanen tetap valid.",
+        noTemplateTitle: "Belum ada template untuk tipe ini",
+        noTemplateDesc:
+          "Buat template terlebih dahulu sebelum menambahkan sertifikat tipe ini.",
+        manageTemplates: "Kelola template",
         saved: "Sertifikat disimpan.",
         deleted: "Sertifikat dihapus.",
         revoked: "Sertifikat dicabut.",
@@ -210,6 +231,10 @@ export const translations = {
           required: "Wajib diisi.",
           idFormat: "Format: LEXA-WBNR/INTR-TAHUN-NOMOR.",
           idTaken: "Certificate ID sudah dipakai.",
+          idType: "Prefiks ID harus sesuai tipe (WBNR untuk webinar, INTR untuk magang).",
+          tooLong: (max: number) => `Maksimal ${max} karakter.`,
+          invalidChars:
+            "Hanya huruf Latin, angka, dan tanda baca umum yang didukung (tanpa emoji/huruf non-Latin).",
           invalid: "Nilai tidak valid.",
         },
       },
@@ -235,9 +260,12 @@ export const translations = {
           accentColor: "Warna Aksen",
         },
         deleteTitle: "Hapus template?",
-        deleteDesc: "Tindakan ini tidak dapat dibatalkan.",
+        deleteDesc: (name: string) =>
+          `Hapus template "${name}"? Tindakan ini tidak dapat dibatalkan.`,
         inUseTitle: "Template sedang dipakai",
         inUseDesc: "Template ini masih dipakai oleh sertifikat dan tidak dapat dihapus.",
+        typeLockedHint:
+          "Tipe tidak dapat diubah karena template ini sudah dipakai oleh sertifikat.",
         saved: "Template disimpan.",
         deleted: "Template dihapus.",
         empty: "Belum ada template.",
@@ -263,7 +291,8 @@ export const translations = {
         export: "Ekspor CSV",
         clear: "Hapus semua log",
         clearTitle: "Hapus semua log?",
-        clearDesc: "Semua log verifikasi akan dihapus. Tindakan ini tidak dapat dibatalkan.",
+        clearDesc: (count: number) =>
+          `Semua ${count} log verifikasi akan dihapus. Tindakan ini tidak dapat dibatalkan.`,
         cleared: "Semua log dihapus.",
         empty: "Belum ada log.",
         showing: (shown: number, total: number) =>
@@ -291,6 +320,12 @@ export const translations = {
     backHome: "Back to Home",
     adminLink: "Admin dashboard",
 
+    // Settings toggles
+    switchToEnglish: "Switch to English",
+    switchToIndonesian: "Switch to Indonesian",
+    switchToLight: "Switch to light mode",
+    switchToDark: "Switch to dark mode",
+
     // Certificate page
     back: "Back",
     previewPageTitle: "Certificate Preview",
@@ -298,6 +333,8 @@ export const translations = {
     preparingPdf: "Preparing PDF...",
     pdfNote:
       "Note: This PDF is a sample/demonstration certificate, not an official certificate.",
+    revokedPdfNote:
+      "PDF download is disabled for revoked certificates. The verification page can still be shared.",
     previewUnavailableTitle: "PDF preview unavailable",
     previewUnavailableDesc:
       "Your browser cannot display the PDF inline. Please download it to view the contents.",
@@ -420,6 +457,10 @@ export const translations = {
         createdAt: "Created",
         optional: "Optional",
         selectTemplate: "— Select template —",
+        breadcrumb: "Breadcrumb",
+        notifications: "Notifications",
+        storageError:
+          "Failed to save to browser storage. Changes may not persist (storage full or private mode).",
       },
       dashboard: {
         title: "Dashboard",
@@ -454,11 +495,20 @@ export const translations = {
         emptyTitle: "No certificates yet",
         emptyDesc: "Add your first certificate or adjust the filters.",
         deleteTitle: "Delete certificate?",
-        deleteDesc: "This action cannot be undone.",
+        deleteDesc: (name: string, id: string) =>
+          `Delete certificate ${name} (${id})? This action cannot be undone.`,
         revokeTitle: "Revoke certificate?",
-        revokeDesc: "The certificate will be marked as revoked on the public verification page.",
+        revokeDesc: (name: string, id: string) =>
+          `Certificate ${name} (${id}) will be marked as revoked on the public verification page.`,
         restoreTitle: "Restore certificate?",
-        restoreDesc: "The certificate will become valid again.",
+        restoreDesc: (name: string, id: string) =>
+          `Certificate ${name} (${id}) will become valid again.`,
+        idLockedHint:
+          "The Certificate ID and type cannot be changed so the permanent verification link stays valid.",
+        noTemplateTitle: "No template for this type yet",
+        noTemplateDesc:
+          "Create a template first before adding a certificate of this type.",
+        manageTemplates: "Manage templates",
         saved: "Certificate saved.",
         deleted: "Certificate deleted.",
         revoked: "Certificate revoked.",
@@ -482,6 +532,10 @@ export const translations = {
           required: "Required.",
           idFormat: "Format: LEXA-WBNR/INTR-YEAR-NUMBER.",
           idTaken: "Certificate ID is already in use.",
+          idType: "ID prefix must match the type (WBNR for webinar, INTR for internship).",
+          tooLong: (max: number) => `Maximum ${max} characters.`,
+          invalidChars:
+            "Only Latin letters, numbers, and common punctuation are supported (no emoji/non-Latin characters).",
           invalid: "Invalid value.",
         },
       },
@@ -507,9 +561,12 @@ export const translations = {
           accentColor: "Accent Color",
         },
         deleteTitle: "Delete template?",
-        deleteDesc: "This action cannot be undone.",
+        deleteDesc: (name: string) =>
+          `Delete template "${name}"? This action cannot be undone.`,
         inUseTitle: "Template in use",
         inUseDesc: "This template is still used by certificates and cannot be deleted.",
+        typeLockedHint:
+          "The type cannot be changed because this template is already used by certificates.",
         saved: "Template saved.",
         deleted: "Template deleted.",
         empty: "No templates yet.",
@@ -535,7 +592,8 @@ export const translations = {
         export: "Export CSV",
         clear: "Clear all logs",
         clearTitle: "Clear all logs?",
-        clearDesc: "All verification logs will be removed. This action cannot be undone.",
+        clearDesc: (count: number) =>
+          `All ${count} verification logs will be removed. This action cannot be undone.`,
         cleared: "All logs cleared.",
         empty: "No logs yet.",
         showing: (shown: number, total: number) =>

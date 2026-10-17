@@ -12,9 +12,16 @@ interface SharePanelProps {
   caption: string;
   verificationUrl: string;
   onDownload: () => void;
+  /** Disables PDF-dependent sharing (e.g. Instagram) for revoked certificates. */
+  pdfDisabled?: boolean;
 }
 
-export function SharePanel({ caption, verificationUrl, onDownload }: SharePanelProps) {
+export function SharePanel({
+  caption,
+  verificationUrl,
+  onDownload,
+  pdfDisabled,
+}: SharePanelProps) {
   const { language } = useSettings();
   const t = translations[language];
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -79,6 +86,9 @@ export function SharePanel({ caption, verificationUrl, onDownload }: SharePanelP
 
   const handleInstagram = async () => {
     // Instagram has no web share intent: copy caption + trigger PDF download.
+    if (pdfDisabled) {
+      return;
+    }
     try {
       await navigator.clipboard.writeText(caption);
     } catch (error) {
@@ -133,6 +143,8 @@ export function SharePanel({ caption, verificationUrl, onDownload }: SharePanelP
           size="sm"
           className="gap-2"
           onClick={handleInstagram}
+          disabled={pdfDisabled}
+          title={pdfDisabled ? t.revokedPdfNote : undefined}
         >
           <InstagramIcon className="h-4 w-4" aria-hidden="true" />
           {t.shareInstagram}

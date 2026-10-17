@@ -11,12 +11,22 @@ import { Input } from "@/components/ui/input";
 import { useSettings } from "@/contexts/settings-context";
 import { adminActions, useAdminStore } from "@/lib/admin-store";
 import { translations } from "@/lib/i18n";
-import { formatDateTime } from "@/lib/admin-format";
+import { formatDateTime, todayLocalISODate } from "@/lib/admin-format";
 import { cn } from "@/lib/utils";
 import type { VerificationLog, VerificationResult } from "@/lib/types";
 
 const selectClass =
   "h-8 rounded-lg border border-input bg-transparent px-2.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm dark:bg-input/30 [@media(pointer:coarse)]:h-11";
+
+/**
+ * Guards a CSV cell against spreadsheet formula injection and quotes it.
+ * Values starting with =, +, -, @ (or tab/CR) are prefixed with an apostrophe so
+ * Excel/Sheets treat them as text rather than executing them as formulas.
+ */
+function csvCell(value: string): string {
+  const guarded = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  return `"${guarded.replace(/"/g, '""')}"`;
+}
 
 function resultLabel(
   result: VerificationResult,
@@ -91,15 +101,19 @@ export function LogsView() {
       log.source,
     ]);
     const csv = [header, ...rows]
-      .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+      .map((row) => row.map((cell) => csvCell(String(cell))).join(","))
       .join("\n");
     const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `lexa-verification-logs-${new Date().toISOString().slice(0, 10)}.csv`;
+    anchor.download = `lexa-verification-logs-${todayLocalISODate()}.csv`;
+    // Safari needs the anchor in the DOM for programmatic downloads.
+    document.body.appendChild(anchor);
     anchor.click();
-    URL.revokeObjectURL(url);
+    document.body.removeChild(anchor);
+    // Delay revocation so the download can start in all browsers.
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   return (
@@ -242,7 +256,7 @@ export function LogsView() {
         open={clearOpen}
         onOpenChange={setClearOpen}
         title={t.logs.clearTitle}
-        description={t.logs.clearDesc}
+        description={t.logs.clearDesc(logs.length)}
         confirmLabel={t.logs.clear}
         cancelLabel={t.common.cancel}
         destructive
